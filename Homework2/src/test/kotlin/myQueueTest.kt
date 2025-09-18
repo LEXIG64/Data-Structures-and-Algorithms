@@ -26,7 +26,7 @@ class MyQueueTest {
     fun peek() {
         val practiceQueue = MyQueue<Int>()
         practiceQueue.enqueue(5)
-        assertEquals(8, practiceQueue.peek())
+        assertEquals(5, practiceQueue.peek())
         practiceQueue.dequeue()
         assertEquals(null, practiceQueue.peek())
     }

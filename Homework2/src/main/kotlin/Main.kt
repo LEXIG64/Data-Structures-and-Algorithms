@@ -66,6 +66,7 @@ class MyLinkedList<T>(): LinkedList<T> {
             head = newHead
             tail = newHead
         } else {
+            head?.prev = newHead
             head = newHead
         }
     }
@@ -79,6 +80,7 @@ class MyLinkedList<T>(): LinkedList<T> {
             head = newTail
             tail = newTail
         } else {
+            tail?.next = newTail
             tail = newTail
         }
     }
