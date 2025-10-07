@@ -1,0 +1,7 @@
+Out of the 4 sorting strategies I implemented, it seems like insertion sort is the slowest sorting method.
+At smaller list sizes the difference between speeds is less noticeable, but at bigger list sizes it is clear difference.
+For example at a list size of 10, a selection sort takes 180 microseconds and an insertion sort takes 61 microseconds.
+Meanwhile for a list size of 1000, a selection sort takes about 18 milliseconds and an insertion sort takes 252 milliseconds.
+So selection sort and insertion sort are cleary the slowest sorts fo the ones I implemented, and become less efficient for larger sets.
+It wasn't until I has lists of size 1000 or more then I saw varied enough differences in speed to see that merge sort is the fastest.
+I thought that because merge sort is recursive that it would be more inefficient then heap sort but I was wrong.

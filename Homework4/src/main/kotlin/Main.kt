@@ -1,20 +1,19 @@
 package org.example
 import kotlin.random.Random
+import kotlin.time.Duration
 import kotlin.time.measureTime
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 
-fun findmin(unsortedList: MutableList<Int>): Pair<Int, Int> {
+fun findmin(unsortedList: MutableList<Int>): Int {
     var minimum: Int = unsortedList[0]
-    var minIndex: Int = 0
-    for (i in 0 .. unsortedList.size) {
-        if (unsortedList[i] < minimum) {
-            minimum = unsortedList[i]
-            minIndex = i
+    for (i in  unsortedList) {
+        if (i < minimum) {
+            minimum = i
         }
     }
-    return Pair(minimum, minIndex)
+    return minimum
 }
 
 /**
@@ -28,24 +27,7 @@ class MinHeap<T>(nodes: MutableList<Pair<T, Int>>) {
     var vertices = nodes
     private var indexMap: MutableMap<T, Int> = mutableMapOf()
 
-    fun isEmpty(): Boolean {
-        return vertices.isEmpty()
-    }
 
-
-    /**
-     * Insert [data] into the heap with value [heapNumber]
-     * @return true if [data] is added and false if [data] was already there
-     */
-    fun insert(data: T, heapNumber: Int):Boolean {
-        if (contains(data)) {
-            return false
-        }
-        vertices.add(Pair<T, Int>(data, heapNumber))
-        indexMap[data] = vertices.size - 1
-        percolateUp(vertices.size - 1)
-        return true
-    }
 
     /**
      * Gets the minimum value from the heap and removes it.
@@ -69,20 +51,6 @@ class MinHeap<T>(nodes: MutableList<Pair<T, Int>>) {
         }
     }
 
-
-    /**
-     * Change the number of an element
-     * @param vertex the element to change
-     * @param newNumber the new number for the element
-     */
-    fun adjustHeapNumber(vertex: T, newNumber: Int) {
-        getIndex(of=vertex)?.also{ index ->
-            vertices[index] = Pair(vertices[index].first, newNumber)
-            // do both operations to avoid explicitly testing which way to go
-            percolateUp(startIndex=index)
-            bubbleDown(startIndex=index)
-        }
-    }
 
     /**
      * @return true if the element is in the heap, false otherwise
@@ -139,7 +107,7 @@ class MinHeap<T>(nodes: MutableList<Pair<T, Int>>) {
      * @param index2 the second element to swap
      */
     private fun swap(index1: Int, index2: Int) {
-        // update our index map so we still can find thigns
+        // update our index map so we still can find things
         indexMap[vertices[index1].first] = index2
         indexMap[vertices[index2].first] = index1
         val tmp = vertices[index1]
@@ -196,7 +164,7 @@ fun heapSort(unsortedList: MutableList<Int>): List<Int> {
     for (i in unsortedList) {
         heapList.add(Pair(i, i))
     }
-    val unsortedHeap = MinHeap<Int>(heapList)
+    val unsortedHeap = MinHeap(heapList)
     while (unsortedHeap.vertices.isNotEmpty()) {
         sortedList.add(unsortedHeap.getMin())
     }
@@ -246,60 +214,67 @@ fun mergeSort(unsortedList: List<Int>): List<Int> {
 
 fun selectionSort(unsortedList: MutableList<Int>): List<Int> {
     val copyList = unsortedList
-    var minInfo: Pair<Int, Int>
+    var minInfo: Int
     val returnList: MutableList<Int> = mutableListOf()
 
     while (returnList.size != unsortedList.size) {
-        minInfo = findmin(copyList)
-        returnList.add(minInfo.first)
-        copyList.removeAt(minInfo.second)
+        minInfo = findmin(unsortedList)
+        returnList.add(minInfo)
+        copyList.remove(minInfo)
     }
     return returnList
 }
 
 fun insertionSort(unsortedList: MutableList<Int>): List<Int> {
-    val sortedList = unsortedList
     var index: Int
 
 
-    for (i in 1 .. sortedList.size) {
+    for (i in 1 ..unsortedList.size) {
         index = i
-        while (sortedList[index] > sortedList[index-1]) {
-            sortedList.add(index-1, i)
+
+        while (unsortedList[index] > unsortedList[index - 1]) {
+            unsortedList.add((index - 1), i)
             index -= 1
+            if (index <= 0) {
+                index = 1
+            }
         }
     }
-    return sortedList
+    return unsortedList
 }
 
+val heapRuntimes = mutableMapOf<Int, Duration>()
+val mergeRuntimes = mutableMapOf<Int, Duration>()
+val selectionRuntimes = mutableMapOf<Int, Duration>()
+val insertionRuntimes = mutableMapOf<Int, Duration>()
 
 fun main() {
 
-    val sizes = listOf<Int>(100, 1000, 10000, 100000, 1000000)
+    val sizes = listOf(1000,
+        10, 20, 100, 1000, 10000)
     val testList = mutableListOf<Int>()
 
     for (size in sizes) {
         for (n in 1 .. size) {
             testList.add(Random.nextInt(0, 100))
+            n +1
         }
 
         val heapTime = measureTime { heapSort(testList) }
+        heapRuntimes[size] = heapTime
         println("For a size $size list the heap sorting time is $heapTime")
 
-        val mergeTime = measureTime { mergeSort(testList) }
-        println("For a size $size list the merge sorting time is $mergeTime")
-
         val selectionTime = measureTime { selectionSort(testList) }
+        selectionRuntimes[size] = selectionTime
         println("For a size $size list the selection sorting time is $selectionTime")
 
         val insertionTime = measureTime { insertionSort(testList) }
-        println("For a size $size lis the insertion sorting time is $insertionTime")
+        insertionRuntimes[size] = insertionTime
+        println("For a size $size list the insertion sorting time is $insertionTime")
+
+        val mergeTime = measureTime { mergeSort(testList) }
+        mergeRuntimes[size] = mergeTime
+        println("For a size $size list the merge sorting time is $mergeTime")
     }
 }
 
-
-val testList1 = mutableListOf<Int>(9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
-val testList2 = mutableListOf<Int>(8, 54, 88, 101, 636, 28, 25, 67, 1008, 50, 560)
-val testList3 = mutableListOf<Int>(1, 8, 106, 67, 24, 73, 91, 19, 20, 1, 13)
-val testList4 = mutableListOf<Int>(14, 88, 26, 34, 20, 63, 37, 77, 62, 90, 94)
-val testList5 = mutableListOf<Int>(9, 9, 9, 9, 9, 9, 9, 9, 9)
