@@ -1,0 +1,5 @@
+So far my standard matrix multiplication function matches the results of my Strassen's multiplication algorithm
+function, so I can safely assume that they are both implemented correctly. I tested square matrices of sizes 4, 8, 20,
+100, and 1000. At the smallest sizes standard matrix multiplication is much slower then the Strassen algorithm. As the
+sizes got bigger the difference between runtime got smaller until the Strassen algorithm was slower then standard matrix
+multiplication.
