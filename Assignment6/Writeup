@@ -1,0 +1,8 @@
+Out of the 3 different implementations, the greedy algorithm is the fastest though it is also the the least reliable.
+The slowest implementation is surprisingly dynamic programming, but it also fluctuates the most in runtime. At a
+constant set weight for the knapsack, when there are smaller amounts of items dynamic programming is slower at its
+evaluation and faster with larger amounts of items. It is the opposite relationship for the greedy algorithm and
+recursion method which is an unusual result. When the number of items and values and weights of said items are set, the
+runtime for all three implementation increases when the weight of the knapsack increases, which makes sense since more
+items are being examined. Where there are both a large amount of items and a larger knapsack weight capacity, the
+runtime is larger then if either or both of these elements were smaller, and this applies to all three functions.
