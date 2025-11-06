@@ -1,0 +1,7 @@
+I originally implemented my Lempel-Ziv encoder using lists instead of using my associative array. Using lists required
+me to do more operations and class changing in my code that took entra steps and slowed down my runtime. Using the
+associtaive array class I didn't need to have 5 lines of code writing out an operation to save my substring sequences,
+instead it could be done in one line. Additionally this made sending information over to my decoding function a lot
+easier because instead of having to reconstruct a an associative array from a list using indexes, I could just read off
+the original reference number as a key. This also created less errors when saving my substrings because they were stored
+behind a key to prevent unintentional indexing in my code that could cut or overwrite my substrings.
