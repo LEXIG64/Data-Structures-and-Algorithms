@@ -1,0 +1,9 @@
+My table is displayed in my Main file.
+
+ In a brief report, summarize the situations where k-d trees are superior to a brute force search.
+
+K-D tree searches are superior to brute force searches when searching through a 100 or more coordinate points or when
+the coordinate points are in a dimension of 4 or more. As size increases K-D tree searches are a 10th of the runtime of
+brute force searches. As dimensional size of the coordinate points increases the difference in runtime is not as
+extreme. When both dimensionality and number of points are larger then typical values the runtime of a nearest
+neighbor search using K-D trees is exponentially faster then nearest neighbor brute force search.
