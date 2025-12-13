@@ -34,15 +34,16 @@ fun main() {
     val englishTrieRoot = englishTrie.startRoot
     val englishMap = englishTrie.makeMap()
 
-    englishMap["rich"]?.childLetters
-    englishTrieRoot.childLetters
+    // User Input Section
+    println(englishTrieRoot.childLetters) // displays each letter of the alphabet used to start an english word
+    englishMap[""]?.childLetters // access the map of words to their respective nodes
 
-    englishTrie.insert("lexi", 1)
-    englishTrie.search("lexi")
-    englishTrie.pop("lexi")
+    englishTrie.insert("", 0) // add a word to the tree
+    println(englishTrie.search("")) // search for a particular word in the trie
+    println(englishTrie.pop("")) // remove a word from the trie
 
-    println(spellCheck("apolofy", 5, englishTrie))
-    println(predictText("th", englishTrie))
+    println(spellCheck("", 0, englishTrie)) // misspell a word and see how it is corrected
+    println(predictText("", englishTrie)) // start writing a word and see suggestions for what it could be
 }
 
 val alphabetWeights: MutableMap<String, Long> = mutableMapOf(
@@ -66,7 +67,10 @@ class TrieNode(
     var weight: Long = 0)
 
 /**
- *
+ * Creates a class representing the data structure trie that holds word build from a
+ * collection of nodes throughout a tree
+ * Takes a list words with corresponding weights [english],
+ * and a separate list of all words being building into trie [trieWords]
  */
 class Trie (english: MutableList<Pair<String, Long>>, trieWords: MutableList<String>) {
 
@@ -74,7 +78,7 @@ class Trie (english: MutableList<Pair<String, Long>>, trieWords: MutableList<Str
     val startRoot = build(english)
 
     /**
-     * Builds a trie from a list of strings representing real words
+     * Builds a trie from a list of strings [words] representing real words
      * @return the root node of the Trie that holds links to all its children and the rest of the nodes
      */
     private fun build(words: MutableList<Pair<String, Long>>): TrieNode {
@@ -129,7 +133,7 @@ class Trie (english: MutableList<Pair<String, Long>>, trieWords: MutableList<Str
         }
 
     /**
-     *
+     * Adds a new word [word] to the trie with a frequency of [frequency]
      */
     fun insert(word: String, frequency: Long) {
         if (search(word)) {
@@ -164,14 +168,16 @@ class Trie (english: MutableList<Pair<String, Long>>, trieWords: MutableList<Str
                 holder = node
 
             }
-
         }
-
         holder.finishedWord = true
         holder.weight = frequency
         wordsInTrie.add(word)
     }
 
+    /**
+     * Removes a word [word] from the trie
+     * @return the removed word or null if word is not in trie
+     */
     fun pop(word: String): String? {
         var closest: TrieNode = locate(word) ?: return null
         closest.finishedWord = false
@@ -190,8 +196,10 @@ class Trie (english: MutableList<Pair<String, Long>>, trieWords: MutableList<Str
         }
         return word
     }
+
     /**
-     *
+     * Searches the trie for a particular finished word [word]
+     * @return true if the word is in trie and false otherwise
      */
     fun search(word: String): Boolean {
         var index = 0
@@ -218,7 +226,8 @@ class Trie (english: MutableList<Pair<String, Long>>, trieWords: MutableList<Str
     }
 
     /**
-     *
+     * Finds the node associated with a string [word] if it is in the trie
+     * @return the trie node associated with the full word or null if not in trie
      */
     fun locate(word: String): TrieNode? {
 
@@ -250,7 +259,9 @@ class Trie (english: MutableList<Pair<String, Long>>, trieWords: MutableList<Str
     }
 
     /**
-     *
+     * Builds a map of the trie, where the keys are the trie words and the
+     * values are the nodes in the trie that hold the full written out words
+     * @return A map where the keys are words and the values are the word's nodes
      */
     fun makeMap(): MutableMap<String, TrieNode> {
 
@@ -270,6 +281,10 @@ class Trie (english: MutableList<Pair<String, Long>>, trieWords: MutableList<Str
     }
 }
 
+/**
+ * Determines which children nodes of a certain node in a trie [trieNode] have the greatest weight
+ * @return the child node with the greatest weight
+ */
 fun mostLikelyNext (trieNode: TrieNode): TrieNode {
 
     var bestPath = trieNode
@@ -287,6 +302,11 @@ fun mostLikelyNext (trieNode: TrieNode): TrieNode {
 
 val mostCommonLetters = listOf("e", "a", "r", "i", "o", "t", "n", "s", "l", "c", "d")
 
+/**
+ * Takes a starting segement of a word [segment] and suggests options
+ * for what the finished word could be using a prebuilt trie [trie]
+ * @return three possible options for the word being spelt
+ */
 fun predictText (segment: String, trie: Trie): Triple<String, String, String> {
 
     val segmentNode = trie.locate(segment)
@@ -300,7 +320,6 @@ fun predictText (segment: String, trie: Trie): Triple<String, String, String> {
             println("stuck")
             currNode = mostLikelyNext(currNode)
         }
-
         possibilities.add(currNode)
     }
 
@@ -323,6 +342,11 @@ fun predictText (segment: String, trie: Trie): Triple<String, String, String> {
     return Triple(possibilities[0].progress, possibilities[1].progress, possibilities[2].progress)
 }
 
+/**
+ * Takes a word [word] with a single wrong letter at positon [errorPos] and corrects
+ * the mispelling using a prebuilt trie [trie]
+ * @return The correctly spelled version of the misspelt word
+ */
 fun spellCheck (word: String, errorPos: Int, trie: Trie): String {
 
     if (errorPos == word.length-1) {
@@ -355,7 +379,6 @@ fun spellCheck (word: String, errorPos: Int, trie: Trie): String {
                     }
                 }
             }
-
             checking += best
             node = node.children[corrIndex]
 
